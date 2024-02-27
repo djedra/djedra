@@ -6,8 +6,6 @@ Hi there, I'm Anton 👋
 
 ![image](https://github.com/djedra/djedra/assets/33487637/a2782c39-11ae-46e6-a81b-a43896c423d0)
 
-![image](https://github.com/djedra/djedra/assets/33487637/c86c2447-436d-437e-9d34-cdeafe18ca1a)
-
 ![image](https://github.com/djedra/djedra/assets/33487637/7a815479-8d0f-42f7-b96e-a03b4e8570a2)
 
 ![image](https://github.com/djedra/djedra/assets/33487637/626aba5c-683f-4b1e-8628-f13772fca282)
