@@ -8,3 +8,5 @@ Hi there, I'm Anton 👋
 <br />
 
 ![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square)
+
+![](https://hit.yhype.me/github/profile?user_id=33487637)
