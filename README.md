@@ -4,3 +4,6 @@ Hi there, I'm Anton 👋
 
 🌱 I’m currently learning: Fullstack
 
+<br />
+
+![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square)
