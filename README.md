@@ -6,6 +6,6 @@ Hi there, I'm Anton 👋
 
 <br />
 
-![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square)
+![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square)   ![Visits](https://badges.pufler.dev/visits/djedra/djedra?style=flat-square&logo=github&color=black)
 
 ![](https://hit.yhype.me/github/profile?user_id=33487637)
