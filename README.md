@@ -9,4 +9,4 @@ Hi there, I'm Anton 👋
 
 ![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square)
 
-![](https://komarev.com/ghpvc/?username=djedra&label=PROFILE+VIEWS)
+![](https://komarev.com/ghpvc/?username=djedra&label=PROFILE+1)
