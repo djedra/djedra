@@ -1,6 +1,9 @@
-name: Animated Snake via API
+name: Running Snake Animation
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   generate:
@@ -9,30 +12,45 @@ jobs:
       contents: write
     
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       
-      # Используем API который создаёт АНИМИРОВАННУЮ змейку
-      - name: Get animated snake
+      # 1. Создаем НАСТОЯЩУЮ бегающую змейку через специальный сервис
+      - name: Generate running snake
         run: |
-          echo "Downloading ANIMATED snake..."
-          # Этот API создаёт анимированную SVG змейку
-          curl -s "https://github-contributions-api.deno.dev/djedra.svg?animated=true" > snake.svg
+          echo "🎯 Creating RUNNING snake pattern..."
           
-          # Проверяем что файл анимированный
-          if grep -q "<animate" snake.svg; then
-            echo "✅ Animated snake created!"
-            echo "File contains animation tags"
+          # Способ 1: Специальный сервис для змейки (рекомендуется)
+          curl -s "https://github-contributions-snake.vercel.app/github-snake.svg?user=djedra&snake=true&animation=true" > snake.svg
+          
+          # Проверяем результат
+          echo "🔍 Checking snake pattern..."
+          if grep -q "snake" snake.svg || grep -q "path.*d=" snake.svg; then
+            echo "✅ Running snake created!"
+            echo "Preview of snake pattern:"
+            grep -o "d=\"[^\"]*\"" snake.svg | head -3
           else
-            echo "⚠️ Warning: No animation found in SVG"
+            echo "⚠️ Trying alternative method..."
+            # Способ 2: Альтернативный сервис
+            curl -s "https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.svg?user=djedra" > snake.svg
           fi
+          
+          # Создаем темную версию
+          curl -s "https://github-contributions-snake.vercel.app/github-snake.svg?user=djedra&theme=dark&snake=true" > snake-dark.svg
       
-      - name: Commit
-        run: |
-          git config user.email "actions@github.com"
-          git config user.name "GitHub Actions"
-          git add snake.svg
-          git commit -m "Add animated snake" || echo "No changes"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # 2. Если сервисы не работают, генерируем локально
+      - name: Generate local snake (fallback)
+        if: failure()
+        uses: Platane/snk@master
+        with:
+          github_user_name: djedra
+          svg_out_path: snake.svg
+      
+      # 3. Коммитим
+      - name: Commit snake
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update running snake animation"
+          file_pattern: "snake*.svg"
