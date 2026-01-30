@@ -1,48 +1,31 @@
-name: Generate Snake Animation
+name: Simple Snake Generator
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "30 0 * * *"
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
 
     steps:
-      # 1. Клонируем репозиторий (используем v4 для актуальности)
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # 2. Генерируем змейку (ИСПРАВЛЕНО: svg_out_path вместо outputs)
-      - name: Generate Snake
-        uses: Platane/snk@master
-        with:
-          github_user_name: djedra
-          svg_out_path: snake.svg # ← КРИТИЧЕСКИ ВАЖНО!
-
-      # 3. Показываем что создалось
-      - name: Debug - Show files
+      # Просто скачиваем SVG через API
+      - name: Download snake
         run: |
-          echo "=== Текущая директория ==="
-          pwd
-          echo "=== Созданные файлы ==="
-          ls -la *.svg 2>/dev/null || echo "Файлы .svg не найдены!"
-          echo "=== Проверка snake.svg ==="
-          if [ -f "snake.svg" ]; then
-            echo "Файл существует! Размер: $(wc -c < snake.svg) байт"
-            echo "Первые 2 строки:"
-            head -2 snake.svg
-          else
-            echo "ОШИБКА: snake.svg не создан!"
-          fi
+          curl -L "https://github-contributions-api.deno.dev/djedra.svg" > snake.svg
+          echo "Файл создан!"
+          ls -la snake.svg
 
-      # 4. Коммитим с использованием актуального action
-      - name: Commit and push
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Update snake animation"
-          file_pattern: "*.svg"
+      # Коммитим напрямую (без сложных actions)
+      - name: Push to repository
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add snake.svg
+          git commit -m "Update snake $(date +'%Y-%m-%d')" || echo "No changes"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
