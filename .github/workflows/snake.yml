@@ -1,56 +1,15 @@
-name: Update Snake Animation
+name: Generate Snake Animation
 
 on:
   schedule:
-    # Запускается каждый день в полночь по UTC
     - cron: "0 0 * * *"
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/snake.yml"
 
 jobs:
-  generate-snake:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: Platane/snk@master
         with:
-          fetch-depth: 0
-
-      - name: Generate Snake Animation
-        uses: Platane/snk@v3
-        with:
-          github_user_name: ${{ github.repository_owner }}
-          outputs: |
-            assets/github-snake.svg
-            assets/github-snake-dark.svg?palette=github-dark
-            assets/github-snake.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
-
-      - name: Deploy Snake Graphics
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: assets
-          clean: true
-          single-commit: true
-
-      - name: Update README with Snake
-        run: |
-          # Обновляем README с новой ссылкой
-          sed -i 's|!\[Snake animation\].*|![Snake animation](https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/github-snake.svg)|g' README.md
-          sed -i 's|!\[Snake animation dark\].*|![Snake animation dark](https://raw.githubusercontent.com/${{ github.repository }}/gh-pages/github-snake-dark.svg)|g' README.md
-
-          # Коммитим изменения если они есть
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add README.md
-          git diff --quiet && git diff --staged --quiet || git commit -m "Update snake animation in README"
-          git push
+          github_user_name: djedra
+          svg_out_path: dist/github-contribution-grid-snake.svg
