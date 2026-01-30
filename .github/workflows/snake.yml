@@ -1,26 +1,50 @@
-name: Update Snake
+name: Generate Snake Animation
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      # 1. Клонируем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Generate snake
-        run: |
-          curl -s "https://github-contributions.vercel.app/api/v1/djedra?no-total=true&no-legend=true&format=svg" > contributions.svg
-          curl -s "https://github-contributions.vercel.app/api/v1/djedra?no-total=true&no-legend=true&format=svg&theme=dark" > contributions-dark.svg
-
-      - name: Commit and push
-        uses: stefanzweifel/git-auto-commit-action@v4
+      # 2. Генерируем змейку (ИСПРАВЛЕНО: используем svg_out_path вместо outputs)
+      - name: Generate Snake
+        uses: Platane/snk@master
         with:
-          commit_message: "Update contribution snake"
-          file_pattern: "*.svg"
+          github_user_name: djedra
+          svg_out_path: dist/github-contribution-grid-snake.svg
+
+      # 3. Создаём ветку output вручную (гарантирует её существование)
+      - name: Prepare output branch
+        run: |
+          # Создаём директорию dist если её нет
+          mkdir -p dist
+          # Инициализируем ветку output
+          git checkout --orphan output || true
+          git reset --hard
+          echo "# Snake animation branch" > README.md
+          git add README.md
+          git commit -m "Initialize output branch"
+          git push origin output --force
+          # Возвращаемся к main
+          git checkout main
+
+      # 4. Копируем сгенерированный файл в ветку output
+      - name: Deploy to Output Branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: output
+          keep_files: true # Не удалять существующие файлы
+          force_orphan: false
