@@ -1,35 +1,38 @@
-name: Generate Animated Snake
+name: Animated Snake via API
 
-on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"  # Каждый день в полночь
+on: [workflow_dispatch]
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     
     steps:
-      # 1. Клонируем репозиторий
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
       
-      # 2. Используем ПРАВИЛЬНЫЙ action для анимированной змейки
-      - name: Generate animated snake
-        uses: Platane/snk@master
-        with:
-          github_user_name: djedra
-          svg_out_path: snake.svg  # ← Ключевой параметр!
+      # Используем API который создаёт АНИМИРОВАННУЮ змейку
+      - name: Get animated snake
+        run: |
+          echo "Downloading ANIMATED snake..."
+          # Этот API создаёт анимированную SVG змейку
+          curl -s "https://github-contributions-api.deno.dev/djedra.svg?animated=true" > snake.svg
+          
+          # Проверяем что файл анимированный
+          if grep -q "<animate" snake.svg; then
+            echo "✅ Animated snake created!"
+            echo "File contains animation tags"
+          else
+            echo "⚠️ Warning: No animation found in SVG"
+          fi
       
-      # 3. Коммитим изменения
-      - name: Commit and push
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Update animated snake"
-          file_pattern: "*.svg"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: "actions@github.com"
+      - name: Commit
+        run: |
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add snake.svg
+          git commit -m "Add animated snake" || echo "No changes"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
