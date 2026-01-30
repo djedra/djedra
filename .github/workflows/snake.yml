@@ -1,34 +1,11 @@
-name: Generate Snake Animation
+name: Update Snake
 
-on:
-  schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
     steps:
-      # 1. Клонируем репозиторий
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      # 2. Генерируем змейку (ИСПРАВЛЕНО: используем правильный параметр)
-      - name: Generate Snake
-        uses: Platane/snk@master
-        with:
-          github_user_name: djedra
-          svg_out_path: snake.svg # Простой путь в корне
-
-      # 3. Автоматически коммитим файл
-      - name: Commit and Push
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Update snake animation"
-          file_pattern: "*.svg"
-          commit_user_name: "GitHub Actions"
-          commit_user_email: "actions@github.com"
+      - run: |
+          curl -s "https://github-contributions.vercel.app/api/v1/djedra" > snake.svg
+          echo "Файл создан: snake.svg"
