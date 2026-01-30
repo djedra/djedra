@@ -1,48 +1,35 @@
-name: Generate Snake Animation
+name: Generate Animated Snake
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"  # Каждый день в полночь
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     permissions:
       contents: write
     
     steps:
-      # 1. Клонируем репозиторий (используем v4 для актуальности)
-      - name: Checkout repository
+      # 1. Клонируем репозиторий
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       
-      # 2. Генерируем змейку (ИСПРАВЛЕНО: svg_out_path вместо outputs)
-      - name: Generate Snake
+      # 2. Используем ПРАВИЛЬНЫЙ action для анимированной змейки
+      - name: Generate animated snake
         uses: Platane/snk@master
         with:
           github_user_name: djedra
-          svg_out_path: snake.svg  # ← КРИТИЧЕСКИ ВАЖНО!
+          svg_out_path: snake.svg  # ← Ключевой параметр!
       
-      # 3. Показываем что создалось
-      - name: Debug - Show files
-        run: |
-          echo "=== Текущая директория ==="
-          pwd
-          echo "=== Созданные файлы ==="
-          ls -la *.svg 2>/dev/null || echo "Файлы .svg не найдены!"
-          echo "=== Проверка snake.svg ==="
-          if [ -f "snake.svg" ]; then
-            echo "Файл существует! Размер: $(wc -c < snake.svg) байт"
-            echo "Первые 2 строки:"
-            head -2 snake.svg
-          else
-            echo "ОШИБКА: snake.svg не создан!"
-          fi
-      
-      # 4. Коммитим с использованием актуального action
+      # 3. Коммитим изменения
       - name: Commit and push
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update snake animation"
+          commit_message: "Update animated snake"
           file_pattern: "*.svg"
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
