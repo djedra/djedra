@@ -12,11 +12,4 @@ Hi there, I'm Anton 👋
 ![](https://komarev.com/ghpvc/?username=djedra&color=blueviolet&style=flat-square) ![Visits](https://badges.pufler.dev/visits/djedra/djedra?style=flat-square&logo=github&color=black)  
 ![](https://hit.yhype.me/github/profile?account_id=33487637)
 
-## 🐍 Контрибуции
-
-<!-- Это будет заменено автоматически -->
-
 ![Snake animation](https://raw.githubusercontent.com/djedra/djedra/output/github-contribution-grid-snake.svg)
-
-<!-- Для темной темы -->
-<!-- ![Snake animation dark](https://raw.githubusercontent.com/djedra/djedra/output/github-contribution-grid-snake-dark.svg) -->

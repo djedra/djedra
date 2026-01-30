@@ -8,8 +8,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Даем workflow необходимые права
+    permissions:
+      contents: write
+
     steps:
-      - uses: Platane/snk@master
+      # 1. Клонируем репозиторий
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Генерируем змейку
+      - name: Generate Snake
+        uses: Platane/snk@master
         with:
           github_user_name: djedra
-          svg_out_path: dist/github-contribution-grid-snake.svg
+          # Генерируем сразу две темы
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+
+      # 3. Загружаем файлы в специальную ветку 'output'
+      - name: Deploy to Output Branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: output
+          force_orphan: true # Создаст чистую ветку
